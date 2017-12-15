@@ -4,14 +4,14 @@ C# IEnumerable<X>.ForAll on steroids, parallel and with progress.
 
 ForAllP is an extension method to the `IEnumerable<T>` interface.
 
-Similar to `ForAll`, it executes a some code on each item of a collections:
+Similar to `ForAll`, it executes some code on each item of a collections:
 
 - In parallel. Right now, the number of concurrent threads is managed by the runtime library.
 - With progress handling. Five callbacks are provided:
+	- Total start
 	- Item start
 	- Item progress
 	- Item finished
-	- Total start
 	- Total finished
 
 ## Install
