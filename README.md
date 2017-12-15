@@ -1,22 +1,29 @@
 # csharp-forallp
 
-C# IEnumerable<X>.ForAll on steroids, parallel and with progress.
+C# IEnumerable<T>.ForAll, on steroids: parallel and with progress handlers.
 
 ForAllP is an extension method to the `IEnumerable<T>` interface.
 
-Similar to `ForAll`, it executes some code on each item of a collections:
+Similar to `ForAll`, it executes some code on each item of a collection:
 
 - In parallel. Right now, the number of concurrent threads is managed by the runtime library.
 - With progress handling. Five callbacks are provided:
 	- Total start
 	- Item start
 	- Item progress
+	- Item log
 	- Item finished
 	- Total finished
+
+`ForAllP` allows the developer to process a collection of items in parallel and provide actions
+(anonymous functions) that can update the UI, all in the same function call. No delegates, events
+or the like.
 
 ## Install
 
 Right now, you have to copy and paste the code in [ForAllP.cs](ForAllP/ForAllP.cs) into your project.
+
+It is planned to create a nuget package.
 
 ## Usage
 
@@ -26,12 +33,12 @@ string[] data = new string[] { "012", "123", "234", "345", "456", "567", "678", 
 Random rnd = new Random();
 
 data.ForAllP(
-	body: (x, callback_percentage) => {
+	body: (x, callback_percentage, callback_log) => {
 		callback_percentage(0);
 		Thread.Sleep(rnd.Next(500, 1000));
 		callback_percentage(25);
 		Thread.Sleep(rnd.Next(500, 1000));
-		callback_percentage(50);
+		callback_log("Halfway!");
 		Thread.Sleep(rnd.Next(500, 1000));
 		callback_percentage(75);
 		Thread.Sleep(rnd.Next(500, 1000));
@@ -39,6 +46,9 @@ data.ForAllP(
 	},
 	item_progress: (x, n, t, p) => {
 		Console.WriteLine(string.Format("Item progress: {0} ({1}/{2}): {3:P2}", x.ToString(), n, t, p / 100));
+	},
+	item_log: (x, n, t, l) => {
+		Console.WriteLine(string.Format("Item log: {0} ({1}/{2}): {3}", x.ToString(), n, t, l));
 	},
 	item_started: (x, n, t) => {
 		Console.WriteLine(string.Format("Item started: {0} ({1}/{2})", x.ToString(), n, t));
@@ -81,13 +91,16 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 ## Security
 
-If you discover any security related issues, please email DM [@jotaelesalinas](http://twitter.com/jotaelesalinas) instead of using the issue tracker.
+If you discover any security related issues, please email DM [@jotaelesalinas](http://twitter.com/jotaelesalinas)
+instead of using the issue tracker.
 
 ## To do
 
-- [ ] Add some comments
+- [x] Add some comments
 - [ ] Add tests
-- [ ] Create external nuget library
+- [x] Add item log event
+- [ ] Add different signatures to allow simpler body parameters without callbacks or only one
+- [ ] Create external nuget package
 - [ ] Add option to make it async
 - [ ] Add option to limit number of threads
 
@@ -102,4 +115,3 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [link-author]: https://github.com/jotaelesalinas
 [link-contributors]: ../../contributors
-

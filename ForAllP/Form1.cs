@@ -18,14 +18,22 @@ namespace ForAllP
 
             string[] arr = new string[] { "012", "123", "234", "345", "456", "567", "678", "789", "890", "901", "abc", "bcd", "cde", "def" };
             arr.ForAllP(
-                body: (x, callback) => {
+                (item, callback_perc, callback_log) => {
+                    callback_log("starting...");
                     Thread.Sleep(rnd.Next(1000, 2000));
-                    callback(50);
+                    callback_perc(50);
+                    callback_log("in the middle!");
                     Thread.Sleep(rnd.Next(1500, 2000));
-                    callback(100);
+                    callback_perc(100);
+                    callback_log("finished.");
                 },
                 item_progress: (x, n, t, p) => {
                     textBox1.Text += string.Format("Item progress: {0} ({1}/{2}): {3:P2}", x.ToString(), n, t, p / 100) + Environment.NewLine;
+                    Refresh();
+                    Application.DoEvents();
+                },
+                item_log: (x, n, t, l) => {
+                    textBox1.Text += string.Format("Item log: {0} ({1}/{2}): {3}", x.ToString(), n, t, l) + Environment.NewLine;
                     Refresh();
                     Application.DoEvents();
                 },
