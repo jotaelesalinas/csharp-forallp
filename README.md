@@ -99,3 +99,7 @@ If you discover any security related issues, please email DM [@jotaelesalinas](h
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+[link-author]: https://github.com/jotaelesalinas
+[link-contributors]: ../../contributors
+
