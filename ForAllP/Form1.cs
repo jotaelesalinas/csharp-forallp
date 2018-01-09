@@ -1,18 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Putils;
 
-namespace ForAllP
-{
-    public partial class Form1 : Form
-    {
-        public Form1()
-        {
+namespace ForAllP {
+
+    public partial class Form1 : Form {
+
+        public Form1() {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
+        private void button1_Click(object sender, EventArgs e) {
+            IEnumerable<int> values = Enumerable.Range(1, 1000);
+
+            DateTime start = DateTime.Now;
+            double[] doubles = values.Select( x => { Thread.Sleep(25); return x * 1.23456789; } ).ToArray();
+            DateTime end = DateTime.Now;
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
+            textBox1.Text += string.Format("Start: {0}", start) + Environment.NewLine;
+            textBox1.Text += string.Format("Result: {0}", doubles.Sum()) + Environment.NewLine;
+            textBox1.Text += string.Format("End: {0}", end) + Environment.NewLine;
+            textBox1.Text += string.Format("Elapsed: {0}", end - start) + Environment.NewLine;
+            Application.DoEvents();
+
+            start = DateTime.Now;
+            doubles = values.AsParallel().Select(x => { Thread.Sleep(25); return x * 1.23456789; }).ToArray();
+            end = DateTime.Now;
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
+            textBox1.Text += string.Format("Start: {0}", start) + Environment.NewLine;
+            textBox1.Text += string.Format("Result: {0}", doubles.Sum()) + Environment.NewLine;
+            textBox1.Text += string.Format("End: {0}", end) + Environment.NewLine;
+            textBox1.Text += string.Format("Elapsed: {0}", end - start) + Environment.NewLine;
+            Application.DoEvents();
+
+            start = DateTime.Now;
+            doubles = values.Pmap( x => { Thread.Sleep(25); return x * 1.23456789; } ).ToArray();
+            end = DateTime.Now;
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
+            textBox1.Text += string.Format("Start: {0}", start) + Environment.NewLine;
+            textBox1.Text += string.Format("Result: {0}", doubles.Sum()) + Environment.NewLine;
+            textBox1.Text += string.Format("End: {0}", end) + Environment.NewLine;
+            textBox1.Text += string.Format("Elapsed: {0}", end - start) + Environment.NewLine;
+            Application.DoEvents();
+
+            return;
+
             Random rnd = new Random();
             textBox1.Clear();
 
@@ -60,6 +95,7 @@ namespace ForAllP
                 }
             );
         }
+
     }
 
 }
