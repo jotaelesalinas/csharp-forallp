@@ -13,38 +13,64 @@ namespace ForAllP {
             InitializeComponent();
         }
 
+        private long transform(int x) {
+            long a = 0;
+            for (int i = 0; i < x % 1000; i++) {
+                a += i;
+            }
+            return a;
+        }
+
         private void button1_Click(object sender, EventArgs e) {
-            IEnumerable<int> values = Enumerable.Range(1, 1000);
+            button1.Enabled = false;
+            button2.Enabled = false;
 
+            IEnumerable<int> values = Enumerable.Range(1, 10000000);
+
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
+            textBox1.Text += "Select()" + Environment.NewLine;
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
+            Application.DoEvents();
             DateTime start = DateTime.Now;
-            double[] doubles = values.Select( x => { Thread.Sleep(25); return x * 1.23456789; } ).ToArray();
+            long[] doubles = values.Select(transform).ToArray();
             DateTime end = DateTime.Now;
-            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
             textBox1.Text += string.Format("Start: {0}", start) + Environment.NewLine;
             textBox1.Text += string.Format("Result: {0}", doubles.Sum()) + Environment.NewLine;
             textBox1.Text += string.Format("End: {0}", end) + Environment.NewLine;
             textBox1.Text += string.Format("Elapsed: {0}", end - start) + Environment.NewLine;
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
             Application.DoEvents();
 
-            start = DateTime.Now;
-            doubles = values.AsParallel().Select(x => { Thread.Sleep(25); return x * 1.23456789; }).ToArray();
-            end = DateTime.Now;
             textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
+            textBox1.Text += "AsParallel().Select()" + Environment.NewLine;
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
+            Application.DoEvents();
+            start = DateTime.Now;
+            doubles = values.AsParallel().Select(transform).ToArray();
+            end = DateTime.Now;
             textBox1.Text += string.Format("Start: {0}", start) + Environment.NewLine;
             textBox1.Text += string.Format("Result: {0}", doubles.Sum()) + Environment.NewLine;
             textBox1.Text += string.Format("End: {0}", end) + Environment.NewLine;
             textBox1.Text += string.Format("Elapsed: {0}", end - start) + Environment.NewLine;
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
             Application.DoEvents();
 
-            start = DateTime.Now;
-            doubles = values.Pmap( x => { Thread.Sleep(25); return x * 1.23456789; } ).ToArray();
-            end = DateTime.Now;
             textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
+            textBox1.Text += "Pmap()" + Environment.NewLine;
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
+            Application.DoEvents();
+            start = DateTime.Now;
+            doubles = values.Pmap(transform).ToArray();
+            end = DateTime.Now;
             textBox1.Text += string.Format("Start: {0}", start) + Environment.NewLine;
             textBox1.Text += string.Format("Result: {0}", doubles.Sum()) + Environment.NewLine;
             textBox1.Text += string.Format("End: {0}", end) + Environment.NewLine;
             textBox1.Text += string.Format("Elapsed: {0}", end - start) + Environment.NewLine;
+            textBox1.Text += "-------------------------------------------------------------------------------" + Environment.NewLine;
             Application.DoEvents();
+
+            button1.Enabled = true;
+            button2.Enabled = true;
 
             return;
 
@@ -96,6 +122,10 @@ namespace ForAllP {
             );
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 
 }
